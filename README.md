@@ -1,14 +1,16 @@
 # envconfig
 
-[![Build Status](https://travis-ci.org/kelseyhightower/envconfig.svg)](https://travis-ci.org/kelseyhightower/envconfig)
+[![Build Status](https://travis-ci.org/colega/envconfig.svg)](https://travis-ci.org/colega/envconfig)
 
 ```Go
-import "github.com/kelseyhightower/envconfig"
+import "github.com/colega/envconfig"
 ```
+
+A fork of [`github.com/kelseyhightower/envconfig`](https://github.com/kelseyhightower/envconfig) with more features and less support for older versions.
 
 ## Documentation
 
-See [godoc](http://godoc.org/github.com/kelseyhightower/envconfig)
+See [godoc](http://godoc.org/github.com/colega/envconfig)
 
 ## Usage
 
@@ -34,7 +36,7 @@ import (
     "log"
     "time"
 
-    "github.com/kelseyhightower/envconfig"
+    "github.com/colega/envconfig"
 )
 
 type Specification struct {
