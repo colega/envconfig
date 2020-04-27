@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/colega/envconfig.svg)](https://travis-ci.org/colega/envconfig)
 
-<<<<<<< HEAD
 ```go
 import "github.com/colega/envconfig"
 ```
@@ -106,8 +105,7 @@ Databases:
 
 ## Struct Tag Support
 
-Envconfig supports the use of struct tags to specify alternate, default, and required
-environment variables.
+Envconfig supports the use of struct tags to specify alternate, default, and required environment variables.
 
 For example, consider the following struct:
 
@@ -122,17 +120,15 @@ type Specification struct {
 }
 ```
 
-Envconfig has automatic support for CamelCased struct elements when the
-`split_words:"true"` tag is supplied. Without this tag, `AutoSplitVar` above
-would look for an environment variable called `MYAPP_AUTOSPLITVAR`. With the
-setting applied it will look for `MYAPP_AUTO_SPLIT_VAR`. Note that numbers
-will get globbed into the previous word. If the setting does not do the
-right thing, you may use a manual override.
+Envconfig has automatic support for CamelCased struct elements when the `split_words:"true"` tag is supplied. 
+Without this tag, `AutoSplitVar` above would look for an environment variable called `MYAPP_AUTOSPLITVAR`. 
+With the setting applied it will look for `MYAPP_AUTO_SPLIT_VAR`. 
+Note that numbers will get globbed into the previous word. 
+If the setting does not do the right thing, you may use a manual override.
 
-Envconfig will process value for `ManualOverride1` by populating it with the
-value for `MYAPP_MANUAL_OVERRIDE_1`. Without this struct tag, it would have
-instead looked up `MYAPP_MANUALOVERRIDE1`. With the `split_words:"true"` tag
-it would have looked up `MYAPP_MANUAL_OVERRIDE1`.
+Envconfig will process value for `ManualOverride1` by populating it with the value for `MYAPP_MANUAL_OVERRIDE_1`. 
+Without this struct tag, it would have instead looked up `MYAPP_MANUALOVERRIDE1`. 
+With the `split_words:"true"` tag it would have looked up `MYAPP_MANUAL_OVERRIDE1`.
 
 ```bash
 export MYAPP_MANUAL_OVERRIDE_1="this will be the value"
@@ -140,16 +136,12 @@ export MYAPP_MANUAL_OVERRIDE_1="this will be the value"
 # export MYAPP_MANUALOVERRIDE1="and this will not"
 ```
 
-If envconfig can't find an environment variable value for `MYAPP_DEFAULTVAR`,
-it will populate it with "foobar" as a default value.
+If envconfig can't find an environment variable value for `MYAPP_DEFAULTVAR`, it will populate it with "foobar" as a default value.
 
-If envconfig can't find an environment variable value for `MYAPP_REQUIREDVAR`,
-it will return an error when asked to process the struct.  If
-`MYAPP_REQUIREDVAR` is present but empty, envconfig will not return an error.
+If envconfig can't find an environment variable value for `MYAPP_REQUIREDVAR`, it will return an error when asked to process the struct.
+If `MYAPP_REQUIREDVAR` is present but empty, envconfig will not return an error.
 
-If envconfig can't find an environment variable in the form `PREFIX_MYVAR`, and there
-is a struct tag defined, it will try to populate your variable with an environment
-variable that directly matches the envconfig tag in your struct definition:
+If envconfig can't find an environment variable in the form `PREFIX_MYVAR`, and there is a struct tag defined, it will try to populate your variable with an environment variable that directly matches the envconfig tag in your struct definition:
 
 ```bash
 export SERVICE_HOST=127.0.0.1
@@ -163,8 +155,7 @@ type Specification struct {
 }
 ```
 
-Envconfig won't process a field with the "ignored" tag set to "true", even if a corresponding
-environment variable is set.
+Envconfig won't process a field with the "ignored" tag set to "true", even if a corresponding environment variable is set.
 
 ## Supported Struct Field Types
 
@@ -200,10 +191,7 @@ type Specification struct {
 }
 ```
 
-The slice itself can be tagged with `envconfig` tag and works in the usual way, 
-however, `envconfig` tag will be used only to overwrite the key name and won't be 
-used to fill the value from a matching non-prefixed global variable (because all the 
-slice elements share the same tag)
+The slice itself can be tagged with `envconfig` tag and works in the usual way, however, `envconfig` tag will be used only to overwrite the key name and won't be used to fill the value from a matching non-prefixed global variable (because all the slice elements share the same tag)
 
 For example:
 
@@ -236,6 +224,7 @@ type Specification struct {
 ```
 
 But in the following example, KEY will be ignored, although it's an unprefixed version of an `envconfig` tag:
+
 ```bash
 export KEY=THIS_WILL_BE_IGNORED
 ```
@@ -251,8 +240,7 @@ type IgnoredTagSpecification struct {
 
 ## Custom Decoders
 
-Any field whose type (or pointer-to-type) implements `envconfig.Decoder` can
-control its own deserialization:
+Any field whose type (or pointer-to-type) implements `envconfig.Decoder` can control its own deserialization:
 
 ```bash
 export DNS_SERVER=8.8.8.8
@@ -271,5 +259,4 @@ type DNSConfig struct {
 }
 ```
 
-Also, envconfig will use a `Set(string) error` method like from the
-[flag.Value](https://godoc.org/flag#Value) interface if implemented.
+Also, envconfig will use a `Set(string) error` method like from the [flag.Value](https://godoc.org/flag#Value) interface if implemented.
