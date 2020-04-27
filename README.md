@@ -1,6 +1,7 @@
 # envconfig
 
 [![Build Status](https://travis-ci.org/colega/envconfig.svg)](https://travis-ci.org/colega/envconfig)
+[![Coverage Status](https://coveralls.io/repos/github/colega/envconfig/badge.svg?branch=master)](https://coveralls.io/github/colega/envconfig?branch=master)
 
 ```go
 import "github.com/colega/envconfig"

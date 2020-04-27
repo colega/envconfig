@@ -71,10 +71,6 @@ func compareUsage(want, got string, t *testing.T) {
 	}
 }
 
-type Recursive struct {
-	Recursive *Recursive
-}
-
 func TestUsageDefault(t *testing.T) {
 	var s Specification
 	os.Clearenv()
@@ -86,7 +82,7 @@ func TestUsageDefault(t *testing.T) {
 	// copy the output in a separate goroutine so printing can't block indefinitely
 	go func() {
 		var buf bytes.Buffer
-		io.Copy(&buf, r)
+		_, _ = io.Copy(&buf, r)
 		outC <- buf.String()
 	}()
 	w.Close()
@@ -143,7 +139,7 @@ func TestUsageUnknownKeyFormat(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected 'unknown key' error, but got no error")
 	}
-	if strings.Index(err.Error(), unknownError) == -1 {
+	if !strings.Contains(err.Error(), unknownError) {
 		t.Errorf("expected '%s', but got '%s'", unknownError, err.Error())
 	}
 }
