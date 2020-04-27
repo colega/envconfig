@@ -1002,38 +1002,73 @@ func TestBinaryUnmarshalerError(t *testing.T) {
 	}
 }
 
-func TestCheckDisallowedOnlyAllowed(t *testing.T) {
-	var s Specification
-	os.Clearenv()
-	os.Setenv("ENV_CONFIG_DEBUG", "true")
-	os.Setenv("UNRELATED_ENV_VAR", "true")
-	os.Setenv("ENV_CONFIG_STRUCTSLICE_0_PROPERTY", "hello world")
-	err := CheckDisallowed("env_config", &s)
-	if err != nil {
-		t.Errorf("expected no error, got %s", err)
-	}
-}
+func TestUnused(t *testing.T) {
+	t.Run("no unused", func(t *testing.T) {
+		var s Specification
+		os.Clearenv()
+		os.Setenv("ENV_CONFIG_DEBUG", "true")
+		os.Setenv("UNRELATED_ENV_VAR", "true")
+		os.Setenv("ENV_CONFIG_STRUCTSLICE_0_PROPERTY", "hello world")
+		unused, err := Unused("env_config", &s)
+		if err != nil {
+			t.Errorf("expected no error, got %s", err)
+		}
+		if len(unused) > 0 {
+			t.Errorf("expected no unused, got %v", unused)
+		}
+	})
 
-func TestCheckDisallowedMispelled(t *testing.T) {
-	var s Specification
-	os.Clearenv()
-	os.Setenv("ENV_CONFIG_DEBUG", "true")
-	os.Setenv("ENV_CONFIG_ZEBUG", "false")
-	err := CheckDisallowed("env_config", &s)
-	if experr := "unknown environment variable ENV_CONFIG_ZEBUG"; err.Error() != experr {
-		t.Errorf("expected %s, got %s", experr, err)
-	}
-}
+	t.Run("misspelled", func(t *testing.T) {
+		var s Specification
+		os.Clearenv()
+		os.Setenv("ENV_CONFIG_DEBUG", "true")
+		os.Setenv("ENV_CONFIG_ZEBUG", "false")
+		unused, err := Unused("env_config", &s)
+		if err != nil {
+			t.Errorf("expected no error, got %s", err)
+		}
+		if len(unused) != 1 {
+			t.Fatalf("expected one unused, got %d", len(unused))
+		}
+		if unused[0] != "ENV_CONFIG_ZEBUG" {
+			t.Fatalf("expected ENV_CONFIG_ZEBUG to be unused, got %s", unused[0])
+		}
+	})
 
-func TestCheckDisallowedIgnored(t *testing.T) {
-	var s Specification
-	os.Clearenv()
-	os.Setenv("ENV_CONFIG_DEBUG", "true")
-	os.Setenv("ENV_CONFIG_IGNORED", "false")
-	err := CheckDisallowed("env_config", &s)
-	if experr := "unknown environment variable ENV_CONFIG_IGNORED"; err.Error() != experr {
-		t.Errorf("expected %s, got %s", experr, err)
-	}
+	t.Run("ignored", func(t *testing.T) {
+		var s Specification
+		os.Clearenv()
+		os.Setenv("ENV_CONFIG_DEBUG", "true")
+		os.Setenv("ENV_CONFIG_IGNORED", "false")
+		unused, err := Unused("env_config", &s)
+		if err != nil {
+			t.Errorf("expected no error, got %s", err)
+		}
+		if len(unused) != 1 {
+			t.Fatalf("expected one unused, got %d", len(unused))
+		}
+		if unused[0] != "ENV_CONFIG_IGNORED" {
+			t.Fatalf("expected ENV_CONFIG_IGNORED to be unused, got %s", unused[0])
+		}
+	})
+
+	t.Run("does not modify spec", func(t *testing.T) {
+		var s Specification
+		os.Clearenv()
+		os.Setenv("ENV_CONFIG_DEBUG", "true")
+		os.Setenv("UNRELATED_ENV_VAR", "true")
+		os.Setenv("ENV_CONFIG_STRUCTSLICE_0_PROPERTY", "hello world")
+		unused, err := Unused("env_config", &s)
+		if err != nil {
+			t.Errorf("expected no error, got %s", err)
+		}
+		if len(unused) > 0 {
+			t.Errorf("expected no unused, got %v", unused)
+		}
+		if len(s.StructSlice) > 0 {
+			t.Errorf("StructSlice should be still empty, got %v", s.StructSlice)
+		}
+	})
 }
 
 func TestErrorMessageForRequiredAltVar(t *testing.T) {

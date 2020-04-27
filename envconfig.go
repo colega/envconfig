@@ -208,14 +208,14 @@ func gatherInfo(prefix string, spec interface{}, env map[string]string, isInside
 	return infos, nil
 }
 
-// CheckDisallowed checks that no environment variables with the prefix are set
-// that we don't know how or want to parse. This is likely only meaningful with
-// a non-empty prefix.
-func CheckDisallowed(prefix string, spec interface{}) error {
+// Unused returns the slice of environment vars that have the prefix provided but we don't know how or want to parse.
+// This is likely only meaningful with a non-empty prefix.
+func Unused(prefix string, spec interface{}) ([]string, error) {
+	spec = copySpec(spec)
 	env := environment()
 	infos, err := gatherInfoForProcessing(prefix, spec, env)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	vars := make(map[string]struct{})
@@ -227,16 +227,17 @@ func CheckDisallowed(prefix string, spec interface{}) error {
 		prefix = strings.ToUpper(prefix) + "_"
 	}
 
+	var unused []string
 	for key := range env {
 		if !strings.HasPrefix(key, prefix) {
 			continue
 		}
 		if _, found := vars[key]; !found {
-			return fmt.Errorf("unknown environment variable %s", key)
+			unused = append(unused, key)
 		}
 	}
 
-	return nil
+	return unused, nil
 }
 
 // Process populates the specified struct based on environment variables
@@ -495,6 +496,16 @@ func environment() map[string]string {
 		vars[split[0]] = v
 	}
 	return vars
+}
+
+// copySpec copies the spec (struct or pointer to a struct) so we can perform dirty operations on it without modifying
+// the provided reference.
+func copySpec(spec interface{}) interface{} {
+	specType := reflect.TypeOf(spec)
+	if specType.Kind() == reflect.Ptr {
+		specType = specType.Elem()
+	}
+	return reflect.New(specType).Interface()
 }
 
 type prefixFormatter interface{ format(v interface{}) string }

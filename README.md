@@ -155,6 +155,12 @@ type Specification struct {
 
 Envconfig won't process a field with the "ignored" tag set to "true", even if a corresponding environment variable is set.
 
+## Unused fields detection
+
+`Unused(prefix string, spec interface{}) ([]string, error)` provides a slice of environment variables with the given prefix that are not parsed by the spec. 
+This is a more versatile replacement for [`envconfig.CheckDisallowed`](https://github.com/kelseyhightower/envconfig/blob/0b417c4ec4a8a82eecc22a1459a504aa55163d61/envconfig.go#L155) from the original project. 
+Useful to report unused variables to your metrics system (set a prometheus gauge for each of the unused variables and visualize them in Grafana?) or logging system, as well as for validating config and failing (`len(unused) > 0`) if there are unexpected config variables (which most likely are typos os wrong configuration version). Check the [examples] for an example usage.
+
 ## Supported Struct Field Types
 
 envconfig supports these struct field types:
@@ -258,3 +264,5 @@ type DNSConfig struct {
 ```
 
 Also, envconfig will use a `Set(string) error` method like from the [flag.Value](https://godoc.org/flag#Value) interface if implemented.
+
+[examples]: ./example_test.go
