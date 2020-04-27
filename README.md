@@ -8,7 +8,7 @@
 import "github.com/colega/envconfig"
 ```
 
-A fork of [`github.com/kelseyhightower/envconfig`](https://github.com/kelseyhightower/envconfig) with more features and less support for older versions.
+A fork of [`github.com/kelseyhightower/envconfig`](https://github.com/kelseyhightower/envconfig) with more features and less support for older versions. See [fork compatibility](#fork-compatibility) for more details.
 
 ## Usage
 
@@ -264,5 +264,12 @@ type DNSConfig struct {
 ```
 
 Also, envconfig will use a `Set(string) error` method like from the [flag.Value](https://godoc.org/flag#Value) interface if implemented.
+
+## Fork compatibility
+
+This fork maintains interface and tag compatibility with `github.com/kelseyhightower/envconfig@v1.5.0`, i.e., entities implementing same interfaces and defining same tags work the same way with `github.com/colega/envconfig`.
+
+However, since it's defined as a different package, it doesn't share the versioning and thus doesn't offer the package-compatibility: for instance `CheckDisallowed()` is not present in this package and is replaced by `Unused()` function.
+It doesn't make sense to try to make this package a drop-in replacement (using go.mod's replace directives) since its `go.mod` defines a different package anyway.
 
 [examples]: ./example_test.go
